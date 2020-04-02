@@ -1,9 +1,32 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 # configuration
 DEBUG = True
 
+BOOKS = [
+    {
+        'title': 'On the Road',
+        'author': 'Jack Kerouac',
+        'read': True
+    },
+    {
+        'title': 'Harry Potter and the Philosopher\'s Stone',
+        'author': 'J. K. Rowling',
+        'read': False
+    },
+    {
+        'title': 'Green Eggs and Ham',
+        'author': 'Dr. Seuss',
+        'read': True
+    }
+]
+
+TEXT = [
+    {
+    'text': 'Test'
+    },
+]
 
 # instantiate the app
 app = Flask(__name__)
@@ -18,6 +41,34 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def ping_pong():
     return jsonify('pong!')
 
+
+@app.route('/books', methods=['GET', 'POST'])
+def all_books():
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        post_data = request.get_json()
+        BOOKS.append({
+            'title': post_data.get('title'),
+            'author': post_data.get('author'),
+            'read': post_data.get('read')
+        })
+        response_object['message'] = 'Book added!'
+    else:
+        response_object['books'] = BOOKS
+    return jsonify(response_object)
+
+@app.route('/text', methods=['GET', 'POST'])
+def get_text():
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        post_data = request.get_json()
+        TEXT.append({
+            'text': post_data.get('text')
+        })
+        response_object['message'] = 'Text added!'
+    else:
+        response_object['text'] = TEXT
+    return jsonify(response_object)
 
 if __name__ == '__main__':
     app.run()
