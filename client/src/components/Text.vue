@@ -41,6 +41,12 @@ export default {
   },
   methods: {
 
+    getText() {
+      const path = 'http://localhost:5000/text';
+      axios.get(path);
+      this.text = '';
+    },
+
     addText(info) {
       const path = 'http://localhost:5000/text';
       axios.post(path, info)
@@ -49,6 +55,7 @@ export default {
           // eslint-disable-nextline
           console.error(error);
         });
+      this.initForm();
     },
 
     onSubmit(evt) {
@@ -62,9 +69,16 @@ export default {
     },
 
     initForm() {
-      this.form.text = '';
+      this.form.text = 'Bla';
       this.show = true;
+      this.$nextTick(() => {
+        this.show = true;
+      });
     },
+  },
+
+  created() {
+    this.getText();
   },
 };
 </script>
